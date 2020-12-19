@@ -5,30 +5,15 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #include "proc.h"
-
-/*char * most_common(){     // headache
-extern char * names [30000];
-char freq_string[15];
-int freq = 0, best = 0;
-  for(int i = 0; i < 30000; i++){
-    for (int j = 0; j < 30000; j++){
-    if(strncmp(names[i],names[j], 10) == 0){
-      freq++;
-      if(freq > best){
-      strcpy(freq_string, names[i]);
-      best = freq;
-      }
-    }
-     freq = 0;
-   }
-  }
-  }*/
+  
+int stdo = 0;
+int n = 0;
 
 int proc (){
 DIR* proc = opendir("/proc");
 struct dirent* ent;
 extern int fast, verbose, linear, test1;
- extern char * linear_arg, * cycle_arg, * sleep_arg, * ulimit_arg, * exp_proc ;
+extern char * linear_arg, * cycle_arg, * sleep_arg, * ulimit_arg, * exp_proc ;
 char command [60];
 long tgid;
 int status, linear_a, ulimit_a, exp_proc_a, c, freq = 0;
@@ -44,9 +29,9 @@ linear_a = strtol(linear_arg, NULL, 10); // expected linear rate
 ulimit_a = strtol(ulimit_arg, NULL, 10); // highest user limit
 
 while(1){
-  while(ent = readdir(proc)) {
-    if(!isdigit(*ent->d_name))
-        continue;
+	while(ent = readdir(proc)) {
+		if(!isdigit(*ent->d_name))
+			continue;
 
     tgid = strtol(ent->d_name, NULL, 10);
 
@@ -55,7 +40,9 @@ while(1){
     get_uid(tgid);
 }
 
-  printf("Number of processes: %d\n", curr_count_proc);
+	printf("\r                                                                        ");
+	printf("\rScanning processes(%d)...", curr_count_proc);
+    fflush(stdout);
 
   //configure users here -----------------------
 
@@ -67,34 +54,34 @@ while(1){
 
   //--------------------------------------------
 
-  if(linear = 0 && cycles > 0 && curr_count_proc - exp_proc_a  >= 2 * (prev_count_proc - exp_proc_a)){
-    printf("exponential growth rate detected, terminating processess...\n");
-    status = system("skill -u test1");
-    defuse = 1;
-    break;
-   }
+	if(linear = 0 && cycles > 0 && curr_count_proc - exp_proc_a  >= 2 * (prev_count_proc - exp_proc_a)){
+		printf("exponential growth rate detected, terminating processess...\n");
+		status = system("skill -u test1");
+		defuse = 1;
+		break;
+	}
 
-  if(linear = 1 && cycles > 0 && curr_count_proc - exp_proc_a  >=( prev_count_proc - exp_proc_a)+linear_a){
-    printf("found it, terminating processess... \n");
-    status = system("skill -u test1");
-    defuse = 1;
-    //break;
-   }
+	if(linear = 1 && cycles > 0 && curr_count_proc - exp_proc_a  >=( prev_count_proc - exp_proc_a)+linear_a){
+		printf("found it, terminating processess... \n");
+		status = system("skill -u test1");
+		defuse = 1;
+	}
    
-  prev_count_proc = curr_count_proc;
-  curr_count_proc = 0;
-  cycles++;
-  closedir(proc);
-  proc = opendir("/proc");
+	prev_count_proc = curr_count_proc;
+	curr_count_proc = 0;
+	cycles++;
+	closedir(proc);
+	proc = opendir("/proc");
     
- if (strtol(cycle_arg, NULL, 10) == cycles){
-    printf("Finished.\n");
-    break;
-  }
-  if(fast != 1){ //kick into high gear
-    sleep(strtol(sleep_arg, NULL, 10)); //dont sleep if there is speed flag
-  }
- }
+	if (strtol(cycle_arg, NULL, 10) == cycles){
+		printf("Finished.\n");
+		break;
+	}
+	
+	if(fast != 1){
+		sleep(strtol(sleep_arg, NULL, 10)); //dont sleep if there is speed flag
+		}
+	}
 
-closedir(proc);
+	closedir(proc);
 }

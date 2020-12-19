@@ -14,17 +14,14 @@ char *sleep_arg = "1";
 char *ulimit_arg = "500";
 
 
-int
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
-  int index;
-  int c;
+	int index;
+	int c;
+	opterr = 0;
 
-  opterr = 0;
-
-
-  while ((c = getopt (argc, argv, "fvl:c:s:u:")) != -1){
-    switch (c)
+	while ((c = getopt (argc, argv, "fvl:c:s:u:")) != -1){
+		switch (c)
       {
       case 'f':
         fast = 1;
@@ -69,11 +66,9 @@ main (int argc, char **argv)
 
   printf ("fast = %d | verbose = %d | linear argument = %s | number of cycles: %s | sleep per cycle: %s | limiting user processes: %s\n",fast, verbose, linear_arg, cycle_arg,sleep_arg, ulimit_arg);
 
-  // begin the program
-
   proc();
 
-  for (index = optind; index < argc; index++)
-    printf ("Non-option argument %s\n", argv[index]);
-  return 0;
+	for (index = optind; index < argc; index++)
+		printf ("Non-option argument %s\n", argv[index]);
+	return 0;
 }
